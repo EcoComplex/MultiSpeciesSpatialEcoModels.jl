@@ -2,9 +2,11 @@ module MultiSpeciesSpatialEcoModels
 
 export set_neighborhood
 export step_birthdeath!
+export step_birthdeathcol!
 export calc_species_density
 export init_multispecies
 export run_birthdeath!
+export run_birthdeathcol!
 export plot_multispecies
 #
 # Modelo estocastico espacial de una población
@@ -14,6 +16,8 @@ using Statistics
 using Distributions
 using StatsBase
 using Random
+
+include("birthdeathcol.jl")  # step function for the birth-death-colonization model
 
 # Vecindad por defecto 
 #
@@ -83,7 +87,9 @@ function step_birthdeath!(landscape,λ,δ)
 
                     x=[i,j] .+  rand(neighborhood)
                     if !(x[1] > fil || x[1] <1 || x[2] > col || x[2]<1)
-                        landscape[x[1],x[2]] = sp
+                        if(landscape[x[1],x[2]] == 0 )                       # if is empty sp reproduces!
+                            landscape[x[1],x[2]] = sp
+                        end
                     end
                 elseif rnd ≤ acumProb[z+1]
                     #@info "Mortality event  $acumProb z=$z $rnd"
@@ -93,6 +99,10 @@ function step_birthdeath!(landscape,λ,δ)
         end
     end
 end
+
+
+
+
 
 
 """
@@ -181,7 +191,6 @@ function run_birthdeath!(landscape,λ,δ, steps )
 
     return di
 end
-
 
 
     

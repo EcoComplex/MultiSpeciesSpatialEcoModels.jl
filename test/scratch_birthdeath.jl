@@ -8,12 +8,12 @@ fil = 100
 col = 100
 numsp = 4
 densIni = fill(0.1, numsp)
-densIni = [ 0.1 * i for i in 1:numsp]
+# densIni = [ 0.1 * i for i in 1:numsp]
 
 λ = fill(1.7,numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
 δ = fill(1, numsp)
-λ = fill(1,numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
-λ[1]=2
+# λ = fill(1,numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
+# λ[1]=2
 m = init_multispecies(fil,col,densIni)
 calc_species_density(m,numsp)
 plot_multispecies(m,4)
@@ -21,7 +21,7 @@ plot_multispecies(m,4)
 ##
 # run 100 steps and return the densities
 #
-vs = run_birthdeath!(m,λ,δ,100)
+vs = run_birthdeath!(m,λ,δ,200)
 
 ## Plot time series
 #
@@ -41,27 +41,27 @@ col = 100
 
 #  
 #
-λ = rand(Normal(1.7,.04),numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
+λ = rand(Normal(1.7,.1),numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
 δ = rand(Normal(1,.02),numsp)
 
 #  
 #
-λ = fill(1.7,numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
-δ = fill(1,numsp)
+# λ = fill(1.7,numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
+# δ = fill(1,numsp)
 
 
 densIni = fill(0.1,numsp)
-densIni = [ 0.1 * i for i in 1:numsp]
+# densIni = [ 0.1 * i for i in 1:numsp]
 
 m = init_multispecies(fil,col,densIni)
 
 ##  run 100 steps and generate a gif 
-fint = 200
+fint = 400
 dens = zeros(Float64,fint,numsp)
 
 anim = @gif for i in 1:fint
     plt1 = plot_multispecies(m,numsp)
-    plt2=  plot(dens,xlim=(0,fint),ylim=(0,.1),label=nothing) #label=permutedims(["sp $i" for i=1:numsp])
+    plt2=  plot(dens,xlim=(0,fint),ylim=(0,.16),label=nothing) #label=permutedims(["sp $i" for i=1:numsp])
     dens[i,:] = calc_species_density(m,numsp)
     step_birthdeath!(m,λ,δ)
     # push!(pob,sum(mm)/N)         #
@@ -73,6 +73,24 @@ end
 # Number of species at the end of simulation
 #
 count(calc_species_density(m,numsp).>0)
+bar(calc_species_density(m,numsp))
+
+## Compare with birthdeathcol model setting colonization to 0
+#
+#
+m = init_multispecies(fil,col,densIni)
+vs = run_birthdeath!(m,λ,δ,fint)
+count(calc_species_density(m,numsp).>0)
+bar(calc_species_density(m,numsp))
+##
+# Find the surviving species
+#
+surv = unique(filter(x->x>0,m))
+
+# Check the parameters of surviving species
+#
+[ round(λ[i]/δ[i],digits=4) for i in surv]
+
 
 ##
 # Plot each 10 steps --> time 1000
