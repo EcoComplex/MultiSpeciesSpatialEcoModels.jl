@@ -60,7 +60,7 @@ function step_birthdeathcol!(landscape,λ,δ,α)
                 if rnd ≤ acumProb[z-1]
                     #@info "Birth event $acumProb z=$z $rnd"
 
-                    x=[i,j] .+  rand(neighborhood)
+                    x=(i,j) .+  rand(neighborhood)
                     if !(x[1] > fil || x[1] <1 || x[2] > col || x[2]<1)
                         if(landscape[x[1],x[2]] == 0 )                         # if is empty sp reproduces!
                             landscape[x[1],x[2]] = sp

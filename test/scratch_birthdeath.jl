@@ -1,4 +1,5 @@
 ## Initialization
+using Revise
 using MultiSpeciesSpatialEcoModels
 using Plots
 
@@ -6,7 +7,7 @@ using Plots
 
 fil = 100
 col = 100
-numsp = 4
+numsp = 10
 densIni = fill(0.1, numsp)
 # densIni = [ 0.1 * i for i in 1:numsp]
 

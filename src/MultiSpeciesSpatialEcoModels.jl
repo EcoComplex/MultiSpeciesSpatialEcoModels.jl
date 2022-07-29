@@ -1,6 +1,7 @@
 module MultiSpeciesSpatialEcoModels
 
-export set_neighborhood
+export set_neighborhood!
+export get_neighborhood
 export step_birthdeath!
 export step_birthdeathcol!
 export calc_species_density
@@ -23,8 +24,12 @@ include("birthdeathcol.jl")  # step function for the birth-death-colonization mo
 #
 neighborhood = ((0,1),(0,-1),(1,0),(-1,0) )
 
-function set_neighborhood(nbh)
+function set_neighborhood!(nbh)
     neighborhood = nbh
+end
+
+function get_neighborhood()
+    return neighborhood 
 end
 
 """
@@ -85,7 +90,7 @@ function step_birthdeath!(landscape,λ,δ)
                 if rnd ≤ acumProb[z]
                     #@info "Birth event $acumProb z=$z $rnd"
 
-                    x=[i,j] .+  rand(neighborhood)
+                    x=(i,j) .+  rand(neighborhood)
                     if !(x[1] > fil || x[1] <1 || x[2] > col || x[2]<1)
                         if(landscape[x[1],x[2]] == 0 )                       # if is empty sp reproduces!
                             landscape[x[1],x[2]] = sp
@@ -123,8 +128,6 @@ function plot_multispecies(landscape,numsp)
     heatmap(landscape,aspect_ratio=:equal,legend=:none,xticks=:none,yticks=:none,framestyle=:none,clims=(0,numsp))
 end
 
-# Una funcion para Inicializar
-# Pensar la escala del sitio 30x30 cm ponele!
 """
     init_multispecies(fil, col, densidadIni)
 

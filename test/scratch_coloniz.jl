@@ -7,11 +7,11 @@ using Plots
 
 fil = 100
 col = 100
-numsp = 4
+numsp = 10
 densIni = fill(0.0, numsp)
 # densIni = [ 0.1 * i for i in 1:numsp]
 
-λ = fill(2,numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
+λ = fill(1.7,numsp)   # Todas las especies por encima del punto critico λ/δ > 1.5
 δ = fill(1, numsp)
 α = fill(0.05, numsp)
 
