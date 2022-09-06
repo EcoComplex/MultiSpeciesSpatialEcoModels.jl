@@ -1,5 +1,5 @@
 """
-    step_birthdeathcol!(landscape, λ,δ,α)
+    step_birthdeathcol!(landscape, λ,δ,α; vecindad=neighborhood)
 
 Performs a step of the model a birth-death-colonization multispecies model, where `landscape` is the model grid, and 
 λ and δ are vectors of the birth and death rate parameters. These vectors must have the same length that also defines the number of competing 
@@ -9,7 +9,7 @@ The parameters λ and δ could change in any step of the model.
 
 
 """
-function step_birthdeathcol!(landscape,λ,δ,α)
+function step_birthdeathcol!(landscape,λ,δ,α; vecindad=neighborhood)
     if !(length(α)==length(λ)==length(δ))
         error("Lengths of λ,δ,α must be equal")
     end
@@ -59,8 +59,7 @@ function step_birthdeathcol!(landscape,λ,δ,α)
             if acumProb[z-2] < rnd 
                 if rnd ≤ acumProb[z-1]
                     #@info "Birth event $acumProb z=$z $rnd"
-
-                    x=(i,j) .+  rand(neighborhood)
+                    x=(i,j) .+  randvecino_2D(vecindad)
                     if !(x[1] > fil || x[1] <1 || x[2] > col || x[2]<1)
                         if(landscape[x[1],x[2]] == 0 )                         # if is empty sp reproduces!
                             landscape[x[1],x[2]] = sp
@@ -92,12 +91,12 @@ end
 Runs the model with `landscape` grid and parameters vectors λ δ α (birth death  and colonization rate) during `steps` time
 The model must be initialized previously, it modifies the `landscape` matrix and returns a matrix of populations over time.
 """
-function run_birthdeathcol!(landscape,λ,δ,α, steps )
+function run_birthdeathcol!(landscape,λ,δ,α, steps; vecindad=neighborhood )
 
     di = zeros(steps,length(δ))
 
     for j in 1:steps
-        step_birthdeathcol!(landscape,λ,δ,α)
+        step_birthdeathcol!(landscape,λ,δ,α, vecindad)
         di[j,:] = calc_species_density(landscape,length(δ))
     end
 

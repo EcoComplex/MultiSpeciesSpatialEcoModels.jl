@@ -21,3 +21,15 @@ function max_patch_highlight(m)
     end
     return labels
 end
+
+"""
+    function max_patch_highlight(m)
+
+Takes a landscape `m` and returns the size of the maximum patch
+
+"""
+function max_patch_size(m)
+    labels = label_components(m)            
+    patch_size = component_lengths(labels)
+    return maximum(patch_size[2:end])
+end
